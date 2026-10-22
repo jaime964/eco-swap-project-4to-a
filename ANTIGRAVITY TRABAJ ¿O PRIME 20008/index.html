@@ -5,6 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoSwap 🌱 | Plataforma Comunitaria de Intercambio Ecológico</title>
   <meta name="description" content="EcoSwap es la plataforma sustentable donde puedes darle una segunda vida a tus cosas. Intercambia libros, artículos del hogar, tecnología y más acumulando EcoPuntos.">
+  
+  <!-- PWA Meta Tags & Web App Manifest -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#10b981" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#09130e" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="EcoSwap">
+  <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -25,8 +38,15 @@
       </div>
 
       <div class="header-actions">
+        <!-- Racha Diaria de Conexión -->
+        <button class="streak-badge" id="btn-open-streak" title="Tu Racha Diaria de Conexión (+10 EcoPts)">
+          <span class="streak-icon" id="header-streak-icon">🔥</span>
+          <span class="streak-count-text" id="header-streak-val">0 Días</span>
+          <span class="streak-ping" id="header-streak-ping"></span>
+        </button>
+
         <!-- Billetera de Puntos Interactiva -->
-        <button class="points-badge" id="btn-open-wallet" title="Ver detalles de tus puntos y bono diario">
+        <button class="points-badge" id="btn-open-wallet" title="Ver detalles de tus puntos y racha diaria">
           <span class="points-icon">⭐</span>
           <span id="header-points-val">250 Pts</span>
         </button>
@@ -41,12 +61,26 @@
         <button class="btn-icon" id="btn-toggle-theme" title="Alternar tema visual" aria-label="Cambiar tema">
           🌙
         </button>
+
+        <!-- Botón Instalar PWA (visible si la app es instalable) -->
+        <button class="pwa-install-badge" id="btn-header-install" title="Instalar EcoSwap en tu dispositivo" style="display: none;">
+          <span class="pwa-icon">📲</span>
+          <span class="pwa-btn-text">Instalar App</span>
+        </button>
       </div>
     </div>
   </header>
 
   <!-- Contenedor Principal de la Aplicación -->
   <div class="app-container">
+
+    <!-- Banner de Estado de Conexión Offline -->
+    <div id="offline-status-banner" class="offline-banner" style="display: none;">
+      <div class="offline-banner-inner">
+        <span class="offline-pulse"></span>
+        <span>📡 <strong>Modo Sin Conexión activo:</strong> Puedes seguir navegando el catálogo, tus puntos y tu racha guardada.</span>
+      </div>
+    </div>
 
     <!-- Banner Hero de Bienvenida -->
     <section class="hero-banner">
@@ -73,6 +107,49 @@
             <span class="stat-label">Economía Justa</span>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Widget Interactivo de Racha Diaria para Impulsar Retención y Consumo Diario -->
+    <section class="streak-widget-card" id="streak-widget-card">
+      <div class="streak-widget-header">
+        <div class="streak-widget-title-group">
+          <div class="streak-fire-avatar" id="widget-fire-avatar">🔥</div>
+          <div>
+            <div class="streak-badge-pill" id="widget-streak-rank">Semilla Constante 🌱</div>
+            <h3 class="streak-widget-title" id="widget-streak-title">Racha Diaria de Conexión</h3>
+            <p class="streak-widget-desc">
+              Conéctate a diario y recibe <strong>10 EcoPts fijos</strong> para canjear productos en tu comunidad sin gastar dinero.
+            </p>
+          </div>
+        </div>
+        <div class="streak-widget-action">
+          <button class="btn-primary btn-claim-streak" id="btn-widget-claim">
+            <span>🔥</span>
+            <span id="btn-widget-claim-text">Reclamar Login (+10 EcoPts)</span>
+          </button>
+          <div class="streak-countdown-text" id="widget-countdown-box" style="display: none;">
+            Próximo bono en: <strong id="widget-countdown-timer">00:00:00</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pista Visual de los 7 Días de Racha (10 EcoPts diarios) -->
+      <div class="streak-days-track" id="widget-days-track">
+        <!-- Generado dinámicamente -->
+      </div>
+
+      <!-- Franja de Impulso al Consumo Diario -->
+      <div class="streak-consumer-incentive">
+        <div class="incentive-info">
+          <span class="incentive-icon">🛍️</span>
+          <span id="streak-incentive-msg">
+            ¡Cada día cuenta! Con tu racha de hoy acumulas EcoPts para canjear <strong>Plantas (40 Pts)</strong> o <strong>Libros (50 Pts)</strong>.
+          </span>
+        </div>
+        <button class="chip-btn" id="btn-explore-swaps" style="font-weight: 700; white-space: nowrap;">
+          Ver Objetos Disponibles ➔
+        </button>
       </div>
     </section>
 
@@ -274,9 +351,21 @@
         </p>
       </div>
 
-      <div style="margin-bottom: 1.25rem;">
-        <button class="btn-primary" id="btn-daily-bonus" style="width: 100%; justify-content: center; padding: 0.85rem;">
-          <span>🎁</span> Reclamar Bono Diario Ecológico (+25 Pts)
+      <div class="wallet-streak-card">
+        <div class="wallet-streak-card-top">
+          <div class="wallet-streak-card-left">
+            <span class="wallet-streak-flame">🔥</span>
+            <div>
+              <div class="wallet-streak-title">Racha Diaria: <span id="wallet-streak-count" style="color: var(--color-fire, #f97316); font-weight:800;">0 Días</span></div>
+              <div class="wallet-streak-sub" id="wallet-streak-sub">Bono de hoy: +10 EcoPts fijos</div>
+            </div>
+          </div>
+          <button class="chip-btn" id="btn-wallet-open-streak-details" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+            Ver Calendario 📅
+          </button>
+        </div>
+        <button class="btn-primary" id="btn-daily-bonus" style="width: 100%; justify-content: center; padding: 0.85rem; margin-top: 0.75rem;">
+          <span>🔥</span> <span id="wallet-bonus-btn-label">Reclamar Login Diario (+10 EcoPts)</span>
         </button>
       </div>
 
@@ -296,10 +385,114 @@
     </div>
   </div>
 
+  <!-- MODAL 4: Racha Diaria de Conexión & Calendario -->
+  <div class="modal-overlay" id="modal-streak">
+    <div class="modal-box streak-modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title"><span>🔥</span> Racha de Conexión Diaria</h3>
+        <button class="btn-close" id="btn-close-streak">&times;</button>
+      </div>
+
+      <div class="streak-hero-display">
+        <div class="streak-flame-bubble" id="modal-flame-bubble">🔥</div>
+        <div class="streak-huge-number" id="modal-streak-count">0</div>
+        <div class="streak-huge-label">Días en Racha Consecutiva</div>
+        <div class="streak-rank-tag" id="modal-streak-rank">Semilla Constante 🌱</div>
+        <p class="streak-hero-desc" id="modal-streak-desc">
+          Entra a diario en la aplicación para mantener tu racha activa y sumar <strong>10 EcoPts diarios</strong> (bono fijo) para canjear productos sustentables.
+        </p>
+      </div>
+
+      <!-- Métricas rápidas de racha -->
+      <div class="streak-stats-row">
+        <div class="streak-stat-box">
+          <div class="stat-box-lbl">Récord Personal</div>
+          <div class="stat-box-val" id="modal-best-streak">0 Días</div>
+        </div>
+        <div class="streak-stat-box">
+          <div class="stat-box-lbl">Login Diario Fijo</div>
+          <div class="stat-box-val" style="color: var(--color-primary-dark);">+10 EcoPts</div>
+        </div>
+        <div class="streak-stat-box">
+          <div class="stat-box-lbl">Total Ganado en Racha</div>
+          <div class="stat-box-val" id="modal-total-streak-pts">0 Pts</div>
+        </div>
+      </div>
+
+      <!-- Calendario visual de 7 días -->
+      <div class="streak-track-section">
+        <div class="streak-track-header">
+          <span style="font-weight: 700; font-size: 0.95rem;">📅 Tu Ciclo Semanal</span>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">+10 EcoPts cada día</span>
+        </div>
+        <div class="streak-days-track" id="modal-days-track">
+          <!-- Renderizado dinámico vía App.js -->
+        </div>
+      </div>
+
+      <!-- Botón de Acción Principal en Modal -->
+      <div style="margin-top: 1.25rem;">
+        <button class="btn-primary" id="btn-modal-claim" style="width: 100%; justify-content: center; padding: 0.95rem; font-size: 1rem;">
+          <span>🔥</span> <span id="btn-modal-claim-text">Reclamar Recompensa (+10 EcoPts)</span>
+        </button>
+        <div class="streak-modal-countdown" id="modal-countdown-box" style="display: none;">
+          ⏱️ Próximo reclamo disponible en: <strong id="modal-countdown-timer">00:00:00</strong>
+        </div>
+      </div>
+
+      <!-- Sugerencia de Consumo -->
+      <div class="streak-modal-incentive">
+        <div style="display: flex; gap: 0.6rem; align-items: flex-start;">
+          <span style="font-size: 1.3rem;">💡</span>
+          <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.45;">
+            <strong>¿Por qué conectarte a diario?</strong> Los EcoPts te permiten llevarte objetos reales del feed comunitario sin pagar dinero. ¡Canjea antes de que otros vecinos los soliciten!
+          </p>
+        </div>
+      </div>
+
+      <!-- Herramientas de Prueba y Simulación -->
+      <details class="streak-dev-details">
+        <summary class="streak-dev-summary">⚙️ Simulador para pruebas rápidas</summary>
+        <div class="streak-dev-body">
+          <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+            Comprueba cómo evoluciona la racha día tras día o qué sucede si se saltea un día:
+          </p>
+          <div class="streak-dev-buttons">
+            <button type="button" class="chip-btn" id="btn-test-advance-day">⚡ Simular Mañana (+1 día)</button>
+            <button type="button" class="chip-btn" id="btn-test-break-streak">⏭️ Simular Salto (+2 días / Racha rota)</button>
+            <button type="button" class="chip-btn" id="btn-test-reset-streak">🔄 Reiniciar Racha</button>
+          </div>
+          <div id="test-offset-display" class="test-offset-indicator"></div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Banner Flotante de Instalación PWA -->
+  <div class="pwa-install-banner" id="pwa-install-banner" style="display: none;">
+    <div class="pwa-banner-card">
+      <div class="pwa-banner-media">
+        <img src="icons/icon-192.png" alt="EcoSwap Icon" class="pwa-banner-logo" />
+      </div>
+      <div class="pwa-banner-info">
+        <h4 class="pwa-banner-title">Instalar EcoSwap</h4>
+        <p class="pwa-banner-desc">Úsala como una app nativa: carga instantánea, acceso directo y funciona sin conexión.</p>
+      </div>
+      <div class="pwa-banner-actions">
+        <button class="btn-primary btn-sm" id="btn-pwa-banner-install">
+          <span>📲</span> Instalar
+        </button>
+        <button class="btn-icon btn-sm" id="btn-pwa-banner-close" title="Descartar por ahora">
+          &times;
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Notificaciones Toast Flotantes -->
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Lógica de la Aplicación -->
-  <script src="app.js"></script>
+  <script src="App.js"></script>
 </body>
 </html>

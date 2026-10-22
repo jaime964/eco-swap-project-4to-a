@@ -153,6 +153,7 @@ body {
   font-weight: 800;
   background: linear-gradient(135deg, var(--color-primary-darker), var(--color-primary));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.02em;
 }
@@ -160,6 +161,7 @@ body {
 [data-theme="dark"] .brand-title {
   background: linear-gradient(135deg, #a7f3d0, var(--color-primary));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -975,7 +977,792 @@ body {
   .hero-banner {
     padding: 1.5rem 1.25rem;
   }
-  .header-actions .btn-primary span {
+  .header-actions .btn-primary span:last-child {
     display: none;
   }
 }
+
+/* ==========================================================================
+   Daily Streak System (Racha Diaria) 🌱🔥
+   ========================================================================== */
+
+:root {
+  --color-fire: #f97316;
+  --color-fire-dark: #ea580c;
+  --color-fire-light: #ffedd5;
+  --color-fire-glow: rgba(249, 115, 22, 0.35);
+  --gradient-fire: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);
+}
+
+[data-theme="dark"] {
+  --color-fire-light: rgba(249, 115, 22, 0.2);
+  --color-fire-glow: rgba(249, 115, 22, 0.45);
+}
+
+/* Header Streak Badge */
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--color-fire-light);
+  border: 1.5px solid rgba(249, 115, 22, 0.35);
+  color: var(--color-fire-dark);
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-bounce);
+  box-shadow: var(--shadow-sm);
+  user-select: none;
+}
+
+[data-theme="dark"] .streak-badge {
+  color: #fdba74;
+  border-color: rgba(251, 146, 60, 0.4);
+}
+
+.streak-badge:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 4px 16px var(--color-fire-glow);
+  border-color: var(--color-fire);
+}
+
+.streak-icon {
+  font-size: 1.15rem;
+  display: inline-block;
+  animation: flameFlicker 2.4s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.streak-badge.has-claim .streak-icon {
+  animation: flamePulse 1.2s ease-in-out infinite;
+}
+
+.streak-ping {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-fire);
+  box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
+  display: none;
+}
+
+.streak-badge.has-claim .streak-ping {
+  display: block;
+  animation: pingRipple 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes pingRipple {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 8px rgba(249, 115, 22, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+  }
+}
+
+@keyframes flameFlicker {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.08, 0.94) rotate(-3deg); }
+  50% { transform: scale(0.96, 1.05) rotate(2deg); }
+  75% { transform: scale(1.04, 0.98) rotate(-1deg); }
+}
+
+@keyframes flamePulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.5)); }
+  50% { transform: scale(1.22); filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.9)); }
+}
+
+/* ==========================================================================
+   Streak Widget Card (Main Dashboard)
+   ========================================================================== */
+.streak-widget-card {
+  background: var(--bg-surface-elevated);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 1.6rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-normal);
+}
+
+.streak-widget-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-fire);
+}
+
+.streak-widget-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .streak-widget-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.streak-widget-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.streak-fire-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-md);
+  background: var(--gradient-fire);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  box-shadow: 0 6px 18px var(--color-fire-glow);
+  flex-shrink: 0;
+  animation: flameFlicker 3s ease-in-out infinite;
+}
+
+.streak-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--color-fire-light);
+  color: var(--color-fire-dark);
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+
+.streak-widget-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.25;
+  margin-bottom: 0.25rem;
+}
+
+.streak-widget-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  max-width: 520px;
+}
+
+.streak-widget-action {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.4rem;
+}
+
+@media (min-width: 768px) {
+  .streak-widget-action {
+    align-items: flex-end;
+  }
+}
+
+.btn-claim-streak {
+  background: var(--gradient-fire);
+  box-shadow: 0 4px 16px var(--color-fire-glow);
+  padding: 0.75rem 1.4rem;
+  font-size: 0.95rem;
+}
+
+.btn-claim-streak:hover {
+  box-shadow: 0 6px 22px var(--color-fire-glow);
+  filter: brightness(1.08);
+}
+
+.btn-claim-streak.claimed {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-light);
+  color: var(--text-muted);
+  box-shadow: none;
+  cursor: default;
+}
+
+.btn-claim-streak.claimed:hover {
+  transform: none;
+  filter: none;
+}
+
+.streak-countdown-text {
+  font-size: 0.8rem;
+  color: var(--text-subtle);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* ==========================================================================
+   Streak 7-Days Visual Progress Track
+   ========================================================================== */
+.streak-days-track {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.65rem;
+  margin-bottom: 1.35rem;
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+}
+
+@media (max-width: 580px) {
+  .streak-days-track {
+    gap: 0.4rem;
+  }
+}
+
+.streak-day-item {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.4rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all var(--transition-bounce);
+  position: relative;
+  min-width: 58px;
+}
+
+.streak-day-name {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.streak-day-icon {
+  font-size: 1.45rem;
+  margin: 0.1rem 0;
+  transition: transform var(--transition-bounce);
+}
+
+.streak-day-reward {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  background: var(--color-primary-subtle);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+/* Day State: Completed */
+.streak-day-item.completed {
+  border-color: var(--color-primary);
+  background: var(--color-primary-subtle);
+}
+
+.streak-day-item.completed .streak-day-name {
+  color: var(--color-primary-dark);
+}
+
+.streak-day-item.completed .streak-day-reward {
+  background: var(--color-primary);
+  color: white;
+}
+
+/* Day State: Active Today (Needs Claim or Just Claimed) */
+.streak-day-item.active-today {
+  border-color: var(--color-fire);
+  background: var(--color-fire-light);
+  box-shadow: 0 4px 14px var(--color-fire-glow);
+  transform: translateY(-2px);
+}
+
+.streak-day-item.active-today .streak-day-name {
+  color: var(--color-fire-dark);
+  font-weight: 800;
+}
+
+.streak-day-item.active-today .streak-day-icon {
+  animation: flamePulse 1.4s ease-in-out infinite;
+}
+
+.streak-day-item.active-today .streak-day-reward {
+  background: var(--gradient-fire);
+  color: white;
+  box-shadow: 0 2px 6px var(--color-fire-glow);
+}
+
+/* Day State: Upcoming / Locked */
+.streak-day-item.locked {
+  opacity: 0.65;
+  background: var(--bg-input);
+}
+
+.streak-day-item.locked .streak-day-reward {
+  color: var(--text-subtle);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .streak-day-item.locked .streak-day-reward {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ==========================================================================
+   Consumer Motivation Incentive Strip
+   ========================================================================== */
+.streak-consumer-incentive {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1.15rem;
+  font-size: 0.85rem;
+}
+
+@media (min-width: 768px) {
+  .streak-consumer-incentive {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.incentive-info {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--text-muted);
+}
+
+.incentive-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Streak Modal Styles
+   ========================================================================== */
+.streak-modal-box {
+  max-width: 540px;
+}
+
+.streak-hero-display {
+  text-align: center;
+  padding: 1rem 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.streak-flame-bubble {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background: var(--gradient-fire);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  box-shadow: 0 8px 26px var(--color-fire-glow);
+  margin-bottom: 0.85rem;
+  animation: flamePulse 2s ease-in-out infinite;
+}
+
+.streak-huge-number {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-main);
+  letter-spacing: -0.04em;
+}
+
+.streak-huge-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.streak-rank-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--color-fire-light);
+  color: var(--color-fire-dark);
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius-full);
+  font-weight: 800;
+  font-size: 0.88rem;
+  margin-top: 0.6rem;
+}
+
+.streak-hero-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  max-width: 440px;
+  margin-top: 0.75rem;
+  line-height: 1.5;
+}
+
+.streak-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.streak-stat-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+}
+
+.stat-box-lbl {
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.stat-box-val {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.streak-track-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.streak-track-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.streak-modal-countdown {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.65rem;
+}
+
+.streak-modal-incentive {
+  background: var(--color-primary-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  margin-top: 1.15rem;
+}
+
+/* Simulation / Test Dev Tools */
+.streak-dev-details {
+  margin-top: 1.15rem;
+  border-top: 1px solid var(--border-light);
+  padding-top: 0.85rem;
+}
+
+.streak-dev-summary {
+  font-size: 0.8rem;
+  color: var(--text-subtle);
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+}
+
+.streak-dev-summary:hover {
+  color: var(--text-main);
+}
+
+.streak-dev-body {
+  padding-top: 0.65rem;
+}
+
+.streak-dev-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.test-offset-indicator {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-fire-dark);
+  margin-top: 0.5rem;
+}
+
+/* Wallet streak card */
+.wallet-streak-card {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.wallet-streak-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wallet-streak-card-left {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.wallet-streak-flame {
+  font-size: 1.6rem;
+}
+
+.wallet-streak-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.wallet-streak-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   PWA Components & Offline Styles
+   ========================================================================== */
+
+/* PWA Install Button in Header */
+.pwa-install-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.25));
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  color: var(--color-primary-dark);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+}
+
+[data-theme="dark"] .pwa-install-badge {
+  color: #34d399;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 95, 70, 0.35));
+}
+
+.pwa-install-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.pwa-icon {
+  font-size: 1rem;
+}
+
+@media (max-width: 640px) {
+  .pwa-btn-text {
+    display: none;
+  }
+  .pwa-install-badge {
+    padding: 0.45rem;
+    border-radius: 50%;
+  }
+}
+
+/* Offline Connection Banner */
+.offline-banner {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1.25rem;
+  box-shadow: var(--shadow-md);
+  animation: slideDownBanner 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.offline-banner-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.offline-pulse {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  animation: pulseOffline 1.8s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulseOffline {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+@keyframes slideDownBanner {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Floating PWA Install Card */
+.pwa-install-banner {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  max-width: 400px;
+  width: calc(100% - 3rem);
+  animation: slideUpPrompt 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUpPrompt {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.pwa-banner-card {
+  background: var(--bg-surface-elevated);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow-lg), 0 0 25px rgba(16, 185, 129, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  backdrop-filter: blur(12px);
+}
+
+.pwa-banner-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.pwa-banner-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pwa-banner-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.2rem;
+}
+
+.pwa-banner-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.pwa-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-sm {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.82rem;
+}
+
+/* Standalone & Mobile Enhancements */
+@media (display-mode: standalone) {
+  body {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .app-header {
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+
+  .pwa-install-badge,
+  .pwa-install-banner {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .pwa-install-banner {
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem;
+    width: auto;
+  }
+  .pwa-banner-card {
+    padding: 0.85rem 1rem;
+    gap: 0.75rem;
+  }
+  .pwa-banner-logo {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+

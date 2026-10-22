@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGradMask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b"/>
+      <stop offset="50%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="leafGradLeftM" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#6ee7b7"/>
+    </linearGradient>
+    <linearGradient id="leafGradRightM" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#a7f3d0"/>
+    </linearGradient>
+    <linearGradient id="stemGradM" x1="50%" y1="100%" x2="50%" y2="0%">
+      <stop offset="0%" stop-color="#047857"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Full-bleed background for maskable icon -->
+  <rect x="0" y="0" width="512" height="512" fill="url(#bgGradMask)" />
+
+  <!-- Inner safe-area artwork (within 80% safe zone: 51 to 460) -->
+  <g transform="translate(51, 51) scale(0.8)">
+    <!-- Decorative Orbit Arc -->
+    <path d="M 120 256 A 136 136 0 1 1 392 256" fill="none" stroke="#6ee7b7" stroke-width="16" stroke-dasharray="16 12" stroke-linecap="round" opacity="0.35"/>
+    <circle cx="392" cy="256" r="12" fill="#f59e0b"/>
+
+    <!-- Base Soil -->
+    <path d="M 176 390 C 210 375, 302 375, 336 390 C 310 408, 202 408, 176 390 Z" fill="#065f46" opacity="0.75"/>
+
+    <!-- Main Stem -->
+    <path d="M 256 384 C 256 310, 252 230, 256 160" fill="none" stroke="url(#stemGradM)" stroke-width="22" stroke-linecap="round"/>
+
+    <!-- Left Leaf -->
+    <path d="M 256 280 C 180 270, 130 210, 150 140 C 220 140, 250 210, 256 280 Z" fill="url(#leafGradLeftM)"/>
+
+    <!-- Right Leaf -->
+    <path d="M 256 230 C 320 220, 375 165, 360 100 C 290 95, 260 160, 256 230 Z" fill="url(#leafGradRightM)"/>
+
+    <!-- EcoPoint Star -->
+    <g transform="translate(372, 110) scale(1)">
+      <polygon points="0,-20 6,-6 20,0 6,6 0,20 -6,6 -20,0 -6,-6" fill="#f59e0b"/>
+      <polygon points="0,-12 4,-4 12,0 4,4 0,12 -4,4 -12,0 -4,-4" fill="#fde68a"/>
+    </g>
+  </g>
+</svg>
